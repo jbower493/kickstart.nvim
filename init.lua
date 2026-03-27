@@ -601,7 +601,7 @@ require('lazy').setup({
       ---@type table<string, vim.lsp.Config>
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         --
@@ -950,3 +950,26 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.softtabstop = 4
+    vim.opt_local.expandtab = true
+  end,
+})
+
+-- Go override
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'go',
+  callback = function() vim.opt_local.expandtab = false end,
+})
+
+vim.opt.smartindent = true
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.go',
+  callback = function() vim.lsp.buf.format { async = false } end,
+})
